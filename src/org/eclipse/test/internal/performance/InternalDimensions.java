@@ -77,7 +77,12 @@ public interface InternalDimensions {
     			USED_LINUX_MEM= new Dim(48, Unit.BYTE),	// the amount of memory that Linux reports is used. From /proc/meminfo. "Used Memory"
     			FREE_LINUX_MEM= new Dim(49, Unit.BYTE),	// the amount of memory that Linux reports is free. From /proc/meminfo. "Free Memory"
     			BUFFERS_LINUX= new Dim(50, Unit.BYTE);	// the amount of memory that Linux reports is used by buffers. From /proc/meminfo. "Buffers Memory"
-    	
+
+//      I/O Counters:    		
+    		Dim
+                RCHAR= new Dim(53, Unit.BYTE),     // bytes read, from /proc/<pid>/io
+                WCHAR= new Dim(54, Unit.BYTE);     // bytes written, from /proc/<pid>/io
+
 // Mac:
 //		OS Counters:
 //		OS Info:

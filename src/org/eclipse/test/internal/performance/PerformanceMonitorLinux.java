@@ -11,10 +11,12 @@
 package org.eclipse.test.internal.performance;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Map;
+import java.util.Properties;
 import java.util.StringTokenizer;
 
 class PerformanceMonitorLinux extends PerformanceMonitor {
@@ -80,7 +82,15 @@ class PerformanceMonitorLinux extends PerformanceMonitor {
 				addScalar(scalars, InternalDimensions.DRS, drs*PAGESIZE);			
 				addScalar(scalars, InternalDimensions.LRS, lrs*PAGESIZE);
 			}
-			
+
+			Properties io = readStatsProperties("/proc/self/io"); //$NON-NLS-1$
+			if (io != null) {
+			    long readBytes = Long.parseLong(io.getProperty("rchar")); //$NON-NLS-1$
+			    long writeBytes = Long.parseLong(io.getProperty("wchar")); //$NON-NLS-1$
+                addScalar(scalars, InternalDimensions.RCHAR, readBytes);      
+                addScalar(scalars, InternalDimensions.WCHAR, writeBytes);      
+			}
+
 			long currentTime= System.currentTimeMillis();
 			if (!PerformanceTestPlugin.isOldDB())
 				addScalar(scalars, InternalDimensions.SYSTEM_TIME, currentTime);
@@ -104,8 +114,33 @@ class PerformanceMonitorLinux extends PerformanceMonitor {
 			super.collectOperatingSystemCounters(scalars);
 		}
 	}
-	
-	/**
+
+	private Properties readStatsProperties( String path )
+    {
+	    try {
+	        Properties props = new Properties();
+	        BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(path)));
+	        try {
+	            String str;
+	            while ((str = in.readLine()) != null) {
+	                int colon = str.indexOf(':');
+	                if (colon > 0) {
+	                    String key = str.substring(0, colon);
+	                    String value = str.substring(colon+1).trim();
+	                    props.put(key, value);
+	                }
+	            }
+	        } finally {
+	            in.close();
+	        }
+	        return props;
+	    } catch (IOException e) {
+	        // too bad
+	    }
+	    return null;
+    }
+
+    /**
 	 * Write out the global machine counters for Linux.
 	 * @param scalars
 	 */
