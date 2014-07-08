@@ -20,7 +20,6 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.test.internal.performance.data.DataPoint;
 import org.eclipse.test.internal.performance.data.Dim;
 import org.eclipse.test.internal.performance.data.Sample;
@@ -141,13 +140,8 @@ public abstract class InternalPerformanceMeter extends PerformanceMeter {
 					}
 
 					align+= printBuffer.length();
-					try {
-						while (align++ < 70) printBuffer.append(' ');
-						printBuffer.append(checkSampleSize(s, sample, dimension));
-					} catch (CoreException x) {
-						badDimensions.add(dimension);
-						continue;
-					}
+					while (align++ < 70) printBuffer.append(' ');
+					printBuffer.append(checkSampleSize(s, sample, dimension));
 
 					ps.print(nameString);
 					ps.print(meanString);
@@ -169,7 +163,7 @@ public abstract class InternalPerformanceMeter extends PerformanceMeter {
 		ps.println();
 	}
 
-	private String checkSampleSize(StatisticsSession s, Sample sample, Dim dimension) throws CoreException {
+	private String checkSampleSize(StatisticsSession s, Sample sample, Dim dimension) {
 		long sampleSize= s.getCount(dimension);
 		double stdev= s.getStddev(dimension);
 		double mean= s.getAverage(dimension);

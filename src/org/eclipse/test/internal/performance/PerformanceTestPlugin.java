@@ -14,21 +14,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Plugin;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.test.internal.performance.data.Dim;
 import org.eclipse.test.internal.performance.db.DB;
 import org.eclipse.test.internal.performance.db.Variations;
 import org.eclipse.test.performance.Dimension;
-import org.osgi.framework.BundleContext;
+import org.junit.Assert;
 
 
 /**
  * @since 3.1
  */
-public class PerformanceTestPlugin extends Plugin {
+public class PerformanceTestPlugin {
 
     public static final String CONFIG= "config"; //$NON-NLS-1$
 	public static final String BUILD= "build"; //$NON-NLS-1$
@@ -144,9 +140,8 @@ public class PerformanceTestPlugin extends Plugin {
 	    return fgOldDB;
 	}
 
-	public void stop(BundleContext context) throws Exception {
+	public void stop() throws Exception {
 		DB.shutdown();
-		super.stop(context);
 	}
 
 	/*
@@ -199,7 +194,7 @@ public class PerformanceTestPlugin extends Plugin {
 		String defaultDim = System.getProperty(ECLIPSE_PERF_DEFAULT_DIM);
 		if (defaultDim == null)  return DEFAULT_DIMENSION;
 		Dimension dimension = getDimension(defaultDim);
-		Assert.isNotNull(dimension, "Invalid default dimension found in system property '"+ECLIPSE_PERF_DEFAULT_DIM+"': "+defaultDim); //$NON-NLS-1$ //$NON-NLS-2$
+		Assert.assertNotNull("Invalid default dimension found in system property '"+ECLIPSE_PERF_DEFAULT_DIM+"': "+defaultDim, dimension); //$NON-NLS-1$ //$NON-NLS-2$
 		return dimension;
 	}
 
@@ -345,36 +340,15 @@ public class PerformanceTestPlugin extends Plugin {
 	// logging
 
 	public static void logError(String message) {
-		if (message == null)
-			message= ""; //$NON-NLS-1$
-		log(new Status(IStatus.ERROR, PLUGIN_ID, INTERNAL_ERROR, message, null));
+		System.out.println("ERROR " + message); //$NON-NLS-1$
 	}
 
 	public static void logWarning(String message) {
-		if (message == null)
-			message= ""; //$NON-NLS-1$
-		log(new Status(IStatus.WARNING, PLUGIN_ID, IStatus.OK, message, null));
+		System.out.println("WARN " + message); //$NON-NLS-1$
 	}
 
 	public static void log(Throwable e) {
-		log(new Status(IStatus.ERROR, PLUGIN_ID, INTERNAL_ERROR, "Internal Error", e)); //$NON-NLS-1$
-	}
-
-	public static void log(IStatus status) {
-	    if (fgPlugin != null) {
-	        fgPlugin.getLog().log(status);
-	    } else {
-	        switch (status.getSeverity()) {
-	        case IStatus.ERROR:
-		        System.err.println("Error: " + status.getMessage()); //$NON-NLS-1$
-	            break;
-	        case IStatus.WARNING:
-		        System.err.println("Warning: " + status.getMessage()); //$NON-NLS-1$
-	            break;
-	        }
-	        Throwable exception= status.getException();
-	        if (exception != null)
-	            exception.printStackTrace(System.err);
-	    }
+		System.out.println("ERROR " + e.getMessage()); //$NON-NLS-1$
+		e.printStackTrace(System.out);
 	}
 }

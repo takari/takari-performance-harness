@@ -12,7 +12,6 @@ package org.eclipse.test.performance;
 
 import junit.framework.TestCase;
 
-import org.eclipse.core.runtime.Platform;
 
 import org.eclipse.test.internal.performance.InternalDimensions;
 import org.eclipse.test.internal.performance.InternalPerformanceMeter;
@@ -26,7 +25,6 @@ import org.eclipse.test.internal.performance.eval.AssertChecker;
 import org.eclipse.test.internal.performance.eval.Evaluator;
 import org.eclipse.test.internal.performance.eval.IEvaluator;
 import org.eclipse.test.internal.performance.eval.RelativeBandChecker;
-import org.osgi.framework.Bundle;
 
 /**
  * Helper for performance measurements. Currently provides performance meter
@@ -193,10 +191,6 @@ public class Performance {
 		if (factory != null)
 			return factory;
 		
-		factory= tryInstantiate(Platform.getDebugOption(PerformanceTestPlugin.PLUGIN_ID + PERFORMANCE_METER_FACTORY));
-		if (factory != null)
-			return factory;
-		
 		return createDefaultPerformanceMeterFactory();
 	}
 	
@@ -204,16 +198,7 @@ public class Performance {
 		PerformanceMeterFactory instance= null;
 		if (className != null && className.length() > 0) {
 			try {
-				int separator= className.indexOf(':');
-				Bundle bundle= null;
-				if (separator == -1) {
-					bundle= PerformanceTestPlugin.getDefault().getBundle();
-				} else {
-					String bundleName= className.substring(0, separator);
-					className= className.substring(separator + 1);
-					bundle= Platform.getBundle(bundleName);
-				}
-				Class c= bundle.loadClass(className);
+				Class c= getClass().getClassLoader().loadClass(className);
 				instance= (PerformanceMeterFactory) c.newInstance();
 			} catch (ClassNotFoundException e) {
 		        PerformanceTestPlugin.log(e);
