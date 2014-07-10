@@ -33,6 +33,11 @@
 
   <build>
     <sourceDirectory>src</sourceDirectory>
+    <resources>
+      <resource>
+        <directory>src</directory>
+      </resource>
+    </resources>
     <testSourceDirectory>test-src</testSourceDirectory>
   </build>
 </project>
