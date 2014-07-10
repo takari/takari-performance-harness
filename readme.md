@@ -1,5 +1,5 @@
 This code was extracted from Eclipse Platform releng git repository [1] using
-git-subtree command [2]. The code from Eclipse is kept on eclipse branch and
+git-subtree command [2]. The code from Eclipse is kept on 'eclipse' branch and
 the following steps are expected to pick latest changes from Eclipse.
 
 Clone Eclipse Platform releng repository
@@ -9,7 +9,7 @@ Clone Eclipse Platform releng repository
     $ cd eclipse.platform.releng
 
 Split org.eclipse.test.performance code to 'perf-harness' branch. This takes about
-one minute on reasonably 15-inch Late 2011 MacBook Pro.
+one minute on 15-inch Late 2011 MacBook Pro.
 
     $ git subtree split --prefix=bundles/org.eclipse.test.performance \
           --annotate="(split)" --branch=perf-harness 
