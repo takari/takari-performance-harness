@@ -38,7 +38,7 @@ class PerformanceMonitor {
             addScalar(scalars, InternalDimensions.SYSTEM_TIME, System.currentTimeMillis());
         } else {
             Runtime runtime= Runtime.getRuntime();
-            //runtime.gc();
+            runtime.gc();
             addScalar(scalars, InternalDimensions.USED_JAVA_HEAP, runtime.totalMemory() - runtime.freeMemory());
         }
     }
